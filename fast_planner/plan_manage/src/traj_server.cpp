@@ -267,9 +267,11 @@ void mavrosTrajectoryPub(quadrotor_msgs::PositionCommand cmd){
         setpoint.point_1.position.x = NAN;
         setpoint.point_1.position.y = NAN;
         setpoint.point_1.position.z = NAN;
-        setpoint.point_1.velocity.x = cmd.velocity.x;
-        setpoint.point_1.velocity.y = cmd.velocity.y;
-        setpoint.point_1.velocity.z = cmd.velocity.z;
+        setpoint.point_1.velocity.x = cmd.velocity.x + (cmd.position.x-odom.pose.pose.position.x)*0.5;
+        setpoint.point_1.velocity.y = cmd.velocity.y + (cmd.position.y-odom.pose.pose.position.y)*0.5;
+        setpoint.point_1.velocity.z = cmd.velocity.z + (cmd.position.z-odom.pose.pose.position.z)*0.5;
+        ROS_INFO("D v_x:%f,v_y:%f,v_z:%f",cmd.velocity.x,cmd.velocity.y,cmd.velocity.z);
+        ROS_INFO("D e_x:%f,e_y:%f,e_z:%f",(cmd.position.x-odom.pose.pose.position.x)*0.5,(cmd.position.y-odom.pose.pose.position.y)*0.5,(cmd.position.z-odom.pose.pose.position.z)*0.5);
         setpoint.point_1.acceleration_or_force.x = NAN;
         setpoint.point_1.acceleration_or_force.y = NAN;
         setpoint.point_1.acceleration_or_force.z = NAN;
@@ -349,7 +351,6 @@ void cmdCallback(const ros::TimerEvent& e) {
 
   ros::Time time_now = ros::Time::now();
   double t_cur = (time_now - start_time_).toSec();
-    ROS_INFO("t_cur:%f",t_cur);
   Eigen::Vector3d pos, vel, acc, pos_f;
   double yaw, yawdot;
   if (t_cur < traj_duration_ && t_cur >= 0.0) {
