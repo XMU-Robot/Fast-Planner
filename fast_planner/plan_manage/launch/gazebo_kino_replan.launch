@@ -32,9 +32,9 @@
     <arg name="fy" value="450"/>
 
     <!-- maximum velocity and acceleration the drone will reach -->
-    <arg name="max_vel" value="1.2" />
-    <arg name="max_acc" value="0.8" />
-    <arg name="max_jerk" value="0.6" />
+    <arg name="max_vel" value="2.0" />
+    <arg name="max_acc" value="2.0" />
+    <arg name="max_jerk" value="0.5" />
     <!-- 1: use 2D Nav Goal to select goal  -->
     <!-- 2: use global waypoints below  -->
     <arg name="flight_type" value="1" />
