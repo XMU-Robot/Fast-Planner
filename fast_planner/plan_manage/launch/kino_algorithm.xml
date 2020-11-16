@@ -42,8 +42,8 @@
 
     <!-- planning fsm -->
     <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>
-    <param name="fsm/thresh_replan" value="1.5" type="double"/>
-    <param name="fsm/thresh_no_replan" value="2.0" type="double"/>
+    <param name="fsm/thresh_replan" value="0.5" type="double"/>
+    <param name="fsm/thresh_no_replan" value="1.0" type="double"/>
 
     <param name="fsm/waypoint_num" value="$(arg point_num)" type="int"/>
     <param name="fsm/waypoint0_x" value="$(arg point0_x)" type="double"/>
@@ -63,7 +63,7 @@
     <param name="sdf_map/local_update_range_x"  value="10" /> 
     <param name="sdf_map/local_update_range_y"  value="10" /> 
     <param name="sdf_map/local_update_range_z"  value="8.0" /> 
-    <param name="sdf_map/obstacles_inflation"     value="0.2" /> 
+    <param name="sdf_map/obstacles_inflation"     value="0.5" />
     <param name="sdf_map/local_bound_inflate"    value="0.0"/>
     <param name="sdf_map/local_map_margin" value="50"/>
     <param name="sdf_map/ground_height"        value="-1.0"/>

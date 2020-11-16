@@ -264,14 +264,25 @@ void mavrosTrajectoryPub(quadrotor_msgs::PositionCommand cmd){
         setpoint.point_1.yaw_rate = NAN;
     }
     else if(setpoint.type==1){
+        static Eigen::Vector3d pos_error[2];
+        const double k_p=0.5;
+        const double k_d=2;
+        const double error_max=2;
+        pos_error[1]=pos_error[0];
+        pos_error[0][0]=fmax(fmin(cmd.position.x-odom.pose.pose.position.x,error_max),-error_max);
+        pos_error[0][1]=fmax(fmin(cmd.position.y-odom.pose.pose.position.y,error_max),-error_max);
+        pos_error[0][2]=fmax(fmin(cmd.position.z-odom.pose.pose.position.z,error_max),-error_max);
+        Eigen::Vector3d pos_error_diff=pos_error[0]-pos_error[1];
         setpoint.point_1.position.x = NAN;
         setpoint.point_1.position.y = NAN;
         setpoint.point_1.position.z = NAN;
-        setpoint.point_1.velocity.x = cmd.velocity.x + (cmd.position.x-odom.pose.pose.position.x)*0.5;
-        setpoint.point_1.velocity.y = cmd.velocity.y + (cmd.position.y-odom.pose.pose.position.y)*0.5;
-        setpoint.point_1.velocity.z = cmd.velocity.z + (cmd.position.z-odom.pose.pose.position.z)*0.5;
-        ROS_INFO("D v_x:%f,v_y:%f,v_z:%f",cmd.velocity.x,cmd.velocity.y,cmd.velocity.z);
-        ROS_INFO("D e_x:%f,e_y:%f,e_z:%f",(cmd.position.x-odom.pose.pose.position.x)*0.5,(cmd.position.y-odom.pose.pose.position.y)*0.5,(cmd.position.z-odom.pose.pose.position.z)*0.5);
+
+        setpoint.point_1.velocity.x = cmd.velocity.x + pos_error[0][0]*k_p + pos_error_diff[0]*k_d;
+        setpoint.point_1.velocity.y = cmd.velocity.y + pos_error[0][1]*k_p + pos_error_diff[1]*k_d;
+        setpoint.point_1.velocity.z = cmd.velocity.z + pos_error[0][2]*k_p + pos_error_diff[2]*k_d;
+//        ROS_INFO("D v_x:%f,v_y:%f,v_z:%f",cmd.velocity.x,cmd.velocity.y,cmd.velocity.z);
+//        ROS_INFO("D e_x:%f,e_y:%f,e_z:%f",pos_error[0][0],pos_error[0][1],pos_error[0][2]);
+//        ROS_INFO("D d_x:%f,d_y:%f,d_z:%f",pos_error_diff[0],pos_error_diff[1],pos_error_diff[2]);
         setpoint.point_1.acceleration_or_force.x = NAN;
         setpoint.point_1.acceleration_or_force.y = NAN;
         setpoint.point_1.acceleration_or_force.z = NAN;
