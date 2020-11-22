@@ -75,8 +75,8 @@
     <!-- depth filter -->
     <param name="sdf_map/use_depth_filter" value="true"/>
     <param name="sdf_map/depth_filter_tolerance" value="0.15"/>
-    <param name="sdf_map/depth_filter_maxdist"   value="10.0"/>
-    <param name="sdf_map/depth_filter_mindist"   value="0.2"/>
+    <param name="sdf_map/depth_filter_maxdist"   value="10.0"/><!-- 深度最大值 -->
+    <param name="sdf_map/depth_filter_mindist"   value="0.2"/><!-- 深度最小值  -->
     <param name="sdf_map/depth_filter_margin"    value="2"/>
     <param name="sdf_map/k_depth_scaling_factor" value="1000.0"/>
     <param name="sdf_map/skip_pixel" value="2"/>
@@ -87,7 +87,7 @@
     <param name="sdf_map/p_max"  value="0.90"/>
     <param name="sdf_map/p_occ"  value="0.80"/>
     <param name="sdf_map/min_ray_length" value="0.5"/>
-    <param name="sdf_map/max_ray_length" value="10.0"/>
+    <param name="sdf_map/max_ray_length" value="10.0"/> <!-- 最大感知距离  -->
 
     <param name="sdf_map/esdf_slice_height" value="0.3"/>
     <param name="sdf_map/visualization_truncate_height"   value="8.0"/>
