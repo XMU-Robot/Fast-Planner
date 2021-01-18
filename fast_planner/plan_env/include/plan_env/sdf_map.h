@@ -224,6 +224,9 @@ public:
   Eigen::Vector3d getOrigin();
   int getVoxelNum();
 
+  void imageHander(const sensor_msgs::ImageConstPtr &msg);
+  void poseHander(const geometry_msgs::PoseStampedConstPtr &msg);
+
   typedef std::shared_ptr<SDFMap> Ptr;
 
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW

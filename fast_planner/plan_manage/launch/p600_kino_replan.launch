@@ -1,8 +1,10 @@
 <launch>
+  <param name="/use_sim_time" value="true"/>
   <!-- size of map, change the size in x, y, z according to your application -->
   <arg name="map_size_x" value="60.0"/>
   <arg name="map_size_y" value="30.0"/>
   <arg name="map_size_z" value="8.0"/>
+
 
   <!-- topic of your odometry such as VIO or LIO -->
   <arg name="odom_topic" value="/mavros/local_position/odom" />
@@ -16,7 +18,7 @@
     <arg name="odometry_topic" value="$(arg odom_topic)"/>
 
     <!-- camera pose: transform of camera frame in the world frame -->
-    <!-- depth topic: depth image, 640x480 by default -->
+    <!-- depth topic: depth image, 848x480 by default -->
     <!-- don't set cloud_topic if you already set these ones! -->
     <arg name="camera_pose_topic" value="/mavros/local_position/pose"/>
     <arg name="depth_topic" value="/camera/depth/image_rect_raw"/>
@@ -75,9 +77,10 @@
 
     <include file="$(find plan_manage)/launch/rviz.launch" >
     </include>
-  <!--px4 tf tp pose
-    <include file="$(find tf_to_pose)/px4_pose.launch" >
-    </include>-->
+  <!--px4 tf tp pose-->
+
+  <node pkg="topic_tool" name="time_align" type="time_align" output="screen">
+  </node>
 
   <!-- use simulator
   <include file="$(find plan_manage)/launch/simulator.xml">

@@ -27,10 +27,18 @@
 
 // #define current_img_ md_.depth_image_[image_cnt_ & 1]
 // #define last_img_ md_.depth_image_[!(image_cnt_ & 1)]
-
+void SDFMap::imageHander(const sensor_msgs::ImageConstPtr &msg){
+    double time=msg->header.stamp.toSec();
+    ROS_INFO("imageHander time:%f",time);
+}
+void SDFMap::poseHander(const geometry_msgs::PoseStampedConstPtr &msg){
+    double time=msg->header.stamp.toSec();
+    ROS_INFO("poseHander time:%f",time);
+}
 void SDFMap::initMap(ros::NodeHandle& nh) {
   node_ = nh;
 
+        ROS_INFO("initMap");
   /* get parameter */
   double x_size, y_size, z_size;
   node_.param("sdf_map/resolution", mp_.resolution_, -1.0);
@@ -123,22 +131,28 @@ void SDFMap::initMap(ros::NodeHandle& nh) {
   md_.tmp_buffer2_ = vector<double>(buffer_size, 0);
   md_.raycast_num_ = 0;
 
-  md_.proj_points_.resize(640 * 480 / mp_.skip_pixel_ / mp_.skip_pixel_);
+  md_.proj_points_.resize(848 * 480 / mp_.skip_pixel_ / mp_.skip_pixel_);
   md_.proj_points_cnt = 0;
 
   /* init callback */
 
-  depth_sub_.reset(new message_filters::Subscriber<sensor_msgs::Image>(node_, "/sdf_map/depth", 50));
+  indep_depth_sub_=node_.subscribe<sensor_msgs::Image>("/sdf_map/depth",1,&SDFMap::imageHander,this);
+  indep_pose_sub_=node_.subscribe<geometry_msgs::PoseStamped>("/sdf_map/pose",1,&SDFMap::poseHander,this);
+
+  cout<<"mp_.pose_type_:"<<mp_.pose_type_<<endl;
+  depth_sub_.reset(new message_filters::Subscriber<sensor_msgs::Image>(node_, "/sdf_map/depth", 10));
 
   if (mp_.pose_type_ == POSE_STAMPED) {
+      ROS_INFO("run this POSE_STAMPED");
     pose_sub_.reset(
-        new message_filters::Subscriber<geometry_msgs::PoseStamped>(node_, "/sdf_map/pose", 25));
+        new message_filters::Subscriber<geometry_msgs::PoseStamped>(node_, "/sdf_map/pose", 20));
 
     sync_image_pose_.reset(new message_filters::Synchronizer<SyncPolicyImagePose>(
         SyncPolicyImagePose(100), *depth_sub_, *pose_sub_));
     sync_image_pose_->registerCallback(boost::bind(&SDFMap::depthPoseCallback, this, _1, _2));
 
   } else if (mp_.pose_type_ == ODOMETRY) {
+      ROS_INFO("run this ODOMETRY");
     odom_sub_.reset(new message_filters::Subscriber<nav_msgs::Odometry>(node_, "/sdf_map/odom", 100));
 
     sync_image_odom_.reset(new message_filters::Synchronizer<SyncPolicyImageOdom>(
@@ -821,6 +835,7 @@ void SDFMap::updateESDFCallback(const ros::TimerEvent& /*event*/) {
 
 void SDFMap::depthPoseCallback(const sensor_msgs::ImageConstPtr& img,
                                const geometry_msgs::PoseStampedConstPtr& pose) {
+    ROS_INFO("get depthPos");
   /* get depth image */
   cv_bridge::CvImagePtr cv_ptr;
   cv_ptr = cv_bridge::toCvCopy(img, img->encoding);
@@ -1284,6 +1299,7 @@ void SDFMap::getSurroundPts(const Eigen::Vector3d& pos, Eigen::Vector3d pts[2][2
 
 void SDFMap::depthOdomCallback(const sensor_msgs::ImageConstPtr& img,
                                const nav_msgs::OdometryConstPtr& odom) {
+    ROS_INFO("get depthOdom");
   /* get pose */
   md_.camera_pos_(0) = odom->pose.pose.position.x;
   md_.camera_pos_(1) = odom->pose.pose.position.y;
