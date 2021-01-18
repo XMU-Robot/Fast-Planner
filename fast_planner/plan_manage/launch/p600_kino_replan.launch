@@ -1,5 +1,7 @@
 <launch>
   <param name="/use_sim_time" value="true"/>
+    <node pkg="tf" type="static_transform_publisher" name="tf_world_map"
+          args="0 0 0 0 0 0 world map 100"/>
   <!-- size of map, change the size in x, y, z according to your application -->
   <arg name="map_size_x" value="60.0"/>
   <arg name="map_size_y" value="30.0"/>
@@ -21,7 +23,7 @@
     <!-- depth topic: depth image, 848x480 by default -->
     <!-- don't set cloud_topic if you already set these ones! -->
     <arg name="camera_pose_topic" value="/mavros/local_position/pose"/>
-    <arg name="depth_topic" value="/camera/depth/image_rect_raw"/>
+    <arg name="depth_topic" value="/camera/depth/image_rect_raw/aligin"/>
 
     <!-- topic of point cloud measurement, such as from LIDAR  -->
     <!-- don't set camera pose and depth, if you already set this one! -->

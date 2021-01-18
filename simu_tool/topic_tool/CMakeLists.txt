@@ -21,7 +21,7 @@ catkin_package(
 include_directories(
         ${catkin_INCLUDE_DIRS}
 )
-add_executable(px4_pose px4_pose.cpp time_align.cpp)
+add_executable(px4_pose px4_pose.cpp)
 target_link_libraries(px4_pose ${catkin_LIBRARIES})
 
 

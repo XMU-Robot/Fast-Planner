@@ -136,8 +136,8 @@ void SDFMap::initMap(ros::NodeHandle& nh) {
 
   /* init callback */
 
-  indep_depth_sub_=node_.subscribe<sensor_msgs::Image>("/sdf_map/depth",1,&SDFMap::imageHander,this);
-  indep_pose_sub_=node_.subscribe<geometry_msgs::PoseStamped>("/sdf_map/pose",1,&SDFMap::poseHander,this);
+//  indep_depth_sub_=node_.subscribe<sensor_msgs::Image>("/sdf_map/depth",1,&SDFMap::imageHander,this);
+//  indep_pose_sub_=node_.subscribe<geometry_msgs::PoseStamped>("/sdf_map/pose",1,&SDFMap::poseHander,this);
 
   cout<<"mp_.pose_type_:"<<mp_.pose_type_<<endl;
   depth_sub_.reset(new message_filters::Subscriber<sensor_msgs::Image>(node_, "/sdf_map/depth", 10));
@@ -845,7 +845,7 @@ void SDFMap::depthPoseCallback(const sensor_msgs::ImageConstPtr& img,
   }
   cv_ptr->image.copyTo(md_.depth_image_);
 
-  // std::cout << "depth: " << md_.depth_image_.cols << ", " << md_.depth_image_.rows << std::endl;
+  std::cout << "depth: " << md_.depth_image_.cols << ", " << md_.depth_image_.rows << std::endl;
 
   /* get pose */
   md_.camera_pos_(0) = pose->pose.position.x;
