@@ -853,6 +853,12 @@ void SDFMap::depthPoseCallback(const sensor_msgs::ImageConstPtr& img,
   md_.camera_pos_(2) = pose->pose.position.z;
   md_.camera_q_ = Eigen::Quaterniond(pose->pose.orientation.w, pose->pose.orientation.x,
                                      pose->pose.orientation.y, pose->pose.orientation.z);
+
+  //相机系转换到世界系
+  Eigen::Quaterniond tmp = Eigen::AngleAxisd(-M_PI/2, Eigen::Vector3d::UnitX()) *
+                             Eigen::AngleAxisd(M_PI/2, Eigen::Vector3d::UnitY()) *
+                             Eigen::AngleAxisd(0.0, Eigen::Vector3d::UnitZ());
+    md_.camera_q_*=tmp;
   if (isInMap(md_.camera_pos_)) {
     md_.has_odom_ = true;
     md_.update_num_ += 1;

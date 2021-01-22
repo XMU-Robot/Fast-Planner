@@ -3,9 +3,9 @@
     <node pkg="tf" type="static_transform_publisher" name="tf_world_map"
           args="0 0 0 0 0 0 world map 100"/>
   <!-- size of map, change the size in x, y, z according to your application -->
-  <arg name="map_size_x" value="60.0"/>
-  <arg name="map_size_y" value="30.0"/>
-  <arg name="map_size_z" value="8.0"/>
+  <arg name="map_size_x" value="50.0"/>
+  <arg name="map_size_y" value="50.0"/>
+  <arg name="map_size_z" value="10.0"/>
 
 
   <!-- topic of your odometry such as VIO or LIO -->
