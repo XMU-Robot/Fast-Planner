@@ -27,10 +27,10 @@ int main(int argc,char** argv)
     ros::NodeHandle node;
 
     ros::Publisher base_odom_pub =
-            node.advertise<nav_msgs::Odometry>("/state_ukf/odom",50);//发布类型为速度消息类型的速度发布器
+            node.advertise<nav_msgs::Odometry>("/sdf_map/odom",50);//发布类型为速度消息类型的速度发布器   /state_ukf/odom
 
     ros::Publisher camera_odom_pub =
-            node.advertise<geometry_msgs::PoseStamped>("/pcl_render_node/camera_pose",50);//发布类型为速度消息类型的速度发布器
+            node.advertise<geometry_msgs::PoseStamped>("/mavros/local_position/pose",50);//发布类型为速度消息类型的速度发布器  /pcl_render_node/camera_pose
 
     tf::TransformListener listener1;
     tf::TransformListener listener2;

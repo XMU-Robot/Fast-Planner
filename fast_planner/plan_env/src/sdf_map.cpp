@@ -835,7 +835,7 @@ void SDFMap::updateESDFCallback(const ros::TimerEvent& /*event*/) {
 
 void SDFMap::depthPoseCallback(const sensor_msgs::ImageConstPtr& img,
                                const geometry_msgs::PoseStampedConstPtr& pose) {
-    ROS_INFO("get depthPos");
+  //  ROS_INFO("get depthPos");
   /* get depth image */
   cv_bridge::CvImagePtr cv_ptr;
   cv_ptr = cv_bridge::toCvCopy(img, img->encoding);
@@ -845,7 +845,7 @@ void SDFMap::depthPoseCallback(const sensor_msgs::ImageConstPtr& img,
   }
   cv_ptr->image.copyTo(md_.depth_image_);
 
-  std::cout << "depth: " << md_.depth_image_.cols << ", " << md_.depth_image_.rows << std::endl;
+ // std::cout << "depth: " << md_.depth_image_.cols << ", " << md_.depth_image_.rows << std::endl;
 
   /* get pose */
   md_.camera_pos_(0) = pose->pose.position.x;

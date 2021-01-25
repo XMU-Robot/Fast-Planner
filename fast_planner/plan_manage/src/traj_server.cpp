@@ -234,7 +234,7 @@ point.yaw_rate = NAN;
 void mavrosCmdVelPub(quadrotor_msgs::PositionCommand cmd){
     geometry_msgs::TwistStamped cmd_vel;
     cmd_vel.header.stamp = cmd.header.stamp;
-    cmd_vel.header.frame_id = "local_origin";
+    cmd_vel.header.frame_id = "world";//local_origin
     cmd_vel.twist.linear.x =  cmd.velocity.x;
     cmd_vel.twist.linear.y =  cmd.velocity.y;
     cmd_vel.twist.linear.z =  cmd.velocity.z;
@@ -247,8 +247,8 @@ int set_point_type=1;
 void mavrosTrajectoryPub(quadrotor_msgs::PositionCommand cmd){
     mavros_msgs::Trajectory setpoint;
     setpoint.header.stamp = cmd.header.stamp;
-    setpoint.header.frame_id = "local_origin";
-
+    setpoint.header.frame_id = "world";//local_origin
+    // cout << "cmd.position.x = " << cmd.position.x <<endl;
     setpoint.type = set_point_type;  // MAV_TRAJECTORY_REPRESENTATION::WAYPOINTS
     if(setpoint.type==0) {
         setpoint.point_1.position.x = cmd.position.x;
@@ -295,7 +295,6 @@ void mavrosTrajectoryPub(quadrotor_msgs::PositionCommand cmd){
     fillUnusedTrajectorySetpoints(setpoint.point_5);
 
     setpoint.time_horizon = {NAN, NAN, NAN, NAN, NAN};
-
     bool xy_pos_sp_valid = std::isfinite(setpoint.point_1.position.x) && std::isfinite(setpoint.point_1.position.y);
     bool xy_vel_sp_valid = std::isfinite(setpoint.point_1.velocity.x) && std::isfinite(setpoint.point_1.velocity.y);
 
@@ -307,6 +306,7 @@ void mavrosTrajectoryPub(quadrotor_msgs::PositionCommand cmd){
         } else {
         setpoint.point_valid = {false, false, false, false, false};
     }
+    //cout << "setpoint.point_1.position.x = " << setpoint.point_1.position.x <<endl;
     trajectory_pub.publish(setpoint);
 }
 void mavrosSystemStatusPub() {
@@ -367,7 +367,6 @@ void cmdCallback(const ros::TimerEvent& e) {
   if (t_cur < traj_duration_ && t_cur >= 0.0) {
 
    //lx add control yaw
-
     pos = traj_[0].evaluateDeBoorT(t_cur);
     vel = traj_[1].evaluateDeBoorT(t_cur);
     acc = traj_[2].evaluateDeBoorT(t_cur);
@@ -425,8 +424,8 @@ void cmdCallback(const ros::TimerEvent& e) {
 //  static int count=0;
 //  if(++count>=5) {
 //      pub_flag=true;
-        mavrosTrajectoryPub(cmd);
-        //mavrosCmdVelPub(cmd);
+        //mavrosTrajectoryPub(cmd);
+        mavrosCmdVelPub(cmd);
 //      count=0;
 //  }
   // draw cmd
@@ -441,9 +440,9 @@ void cmdCallback(const ros::TimerEvent& e) {
   traj_cmd_.push_back(pos);
   if (traj_cmd_.size() > 10000) traj_cmd_.erase(traj_cmd_.begin(), traj_cmd_.begin() + 1000);
 }
-//void trajectoryCallback (const mavros_msgs::Trajectory &msg){
-//    ROS_INFO("recevie trajectory desired!");
-//}
+void trajectoryCallback (const mavros_msgs::Trajectory &msg){
+    ROS_INFO("recevie trajectory desired!");
+}
 int main(int argc, char** argv) {
   ros::init(argc, argv, "traj_server");
   ros::NodeHandle node;
@@ -462,7 +461,7 @@ int main(int argc, char** argv) {
   trajectory_pub = node.advertise<mavros_msgs::Trajectory>("/mavros/trajectory/generated", 10);
   mavros_cmd_vel_pub =  node.advertise<geometry_msgs::TwistStamped>("/mavros/setpoint_velocity/cmd_vel",10);
 
-  //ros::Subscriber trajectory_sub = node.subscribe("/mavros/trajectory/desired", 1, &trajectoryCallback);
+  ros::Subscriber trajectory_sub = node.subscribe("/mavros/trajectory/desired", 1, &trajectoryCallback);
 
   ros::Timer cmd_timer = node.createTimer(ros::Duration(0.01), cmdCallback);
   ros::Timer vis_timer = node.createTimer(ros::Duration(0.25), visCallback);

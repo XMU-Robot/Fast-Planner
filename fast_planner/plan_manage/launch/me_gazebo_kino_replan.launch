@@ -83,7 +83,8 @@
 
   <node pkg="topic_tool" name="time_align" type="time_align" output="screen">
   </node>
-
+  <!--include file="$(find topic_tool)/px4_pose.launch" >
+  </include-->
   <!-- use simulator
   <include file="$(find plan_manage)/launch/simulator.xml">
     <arg name="map_size_x_" value="$(arg map_size_x)"/>
